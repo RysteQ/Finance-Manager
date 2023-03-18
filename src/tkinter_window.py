@@ -1,4 +1,7 @@
+from matplotlib_window import DisplayGraph
+
 from datetime import date
+
 from tkinter.filedialog import asksaveasfile as SaveFD
 from tkinter.filedialog import askopenfile as OpenFD
 import tkinter as Tk
@@ -20,8 +23,16 @@ def initGUI():
         command = SaveFile
     )
 
+    display_csv_graph_button = Tk.Button(
+        text = "Display Graph",
+        width = 22,
+        height = 1,
+        command = DisplayGraph
+    )
+
     open_csv_file_button.grid(column = 0, row = 0)
     save_csv_file_button.grid(column = 1, row = 0)
+    display_csv_graph_button.grid(column = 0, row = 1, columnspan = 2)
 
     return main_window
 
@@ -34,6 +45,7 @@ def OpenFile():
         ]
     )
 
+    # I might use this later so the user can edit the valus in the program rather than an external application
     filename = open_file_dialog.name
     file = open(filename, "r")
     file.close()
@@ -50,6 +62,7 @@ def SaveFile():
         ]
     )
 
+    # I might use this later so the user can edit the valus in the program rather than an external application
     filename = save_file_dialog.name
     file = open(filename, "w")
     
