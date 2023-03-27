@@ -1,10 +1,18 @@
-from matplotlib_window import DisplayGraph
+from matplotlib_window import DisplayGraph as DG
 
 from datetime import date
 
 from tkinter.filedialog import asksaveasfile as SaveFD
 from tkinter.filedialog import askopenfile as OpenFD
 import tkinter as Tk
+
+all_weeks = [
+    [],
+    [],
+    [],
+    [],
+    []
+]
 
 def initGUI():
     main_window = Tk.Tk()
@@ -36,18 +44,12 @@ def initGUI():
     week_four_label = Tk.Label(main_window, text = "Week 4")
     week_five_label = Tk.Label(main_window, text = "Week 5")
 
-    all_weeks = [
-        [],
-        [],
-        [],
-        [],
-        []
-    ]
-
     for i in range(5):
         for j in range(7):
             textbox_to_append = Tk.Text(main_window, height = 1, width = 7)
+
             all_weeks[i].append(textbox_to_append)
+            textbox_to_append.bind("<Tab>", FocusNextElement)
 
     open_csv_file_button.grid(column = 0, row = 0)
     save_csv_file_button.grid(column = 1, row = 0)
@@ -97,3 +99,22 @@ def SaveFile():
     
     file.write(contents)
     file.close()
+
+def FocusNextElement(event):
+    event.widget.tk_focusNext().focus()
+    return("break")
+
+def DisplayGraph():
+    month_data = [
+        [],
+        [],
+        [],
+        [],
+        []
+    ]
+
+    for i in range(5):
+        for j in range(7):
+            month_data.append(all_weeks[i][j].get("1.0", "end-1c"))
+
+    DG(month_data)
