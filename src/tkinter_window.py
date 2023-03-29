@@ -19,14 +19,14 @@ def initGUI():
 
     open_csv_file_button = Tk.Button(
         text = "Open File",
-        width = 10,
+        width = 22,
         height = 1,
         command = OpenFile
     )
 
     save_csv_file_button = Tk.Button(
         text = "Save File",
-        width = 10,
+        width = 22,
         height = 1,
         command = SaveFile
     )
@@ -51,9 +51,9 @@ def initGUI():
             all_weeks[i].append(textbox_to_append)
             textbox_to_append.bind("<Tab>", FocusNextElement)
 
-    open_csv_file_button.grid(column = 0, row = 0)
-    save_csv_file_button.grid(column = 1, row = 0)
-    display_csv_graph_button.grid(column = 2, row = 0)
+    open_csv_file_button.grid(column = 8, row = 1)
+    save_csv_file_button.grid(column = 8, row = 2)
+    display_csv_graph_button.grid(column = 8, row = 3)
 
     week_one_label.grid(column = 0, row = 1)
     week_two_label.grid(column = 0, row = 2)
@@ -76,10 +76,18 @@ def OpenFile():
         ]
     )
 
-    # I might use this later so the user can edit the valus in the program rather than an external application
-    filename = open_file_dialog.name
-    file = open(filename, "r")
-    file.close()
+    if open_file_dialog != None:
+        # I might use this later so the user can edit the values in the program rather than an external application
+        filename = open_file_dialog.name
+        file = open(filename, "r")
+
+        data_to_fill = file.readline().split(',')
+
+        for i in range(5):
+            for j in range(7):
+                all_weeks[i][j].insert("1.0", data_to_fill[(i * 7) + j])
+
+        file.close()
 
 def SaveFile():
     current_day = date.today().strftime("%B %d %Y")
@@ -93,11 +101,15 @@ def SaveFile():
         ]
     )
 
+    for week in GetMonthData():
+        for day in week:
+            contents += str(day) + ","
+
     # I might use this later so the user can edit the valus in the program rather than an external application
     filename = save_file_dialog.name
     file = open(filename, "w")
-    
-    file.write(contents)
+
+    file.write(contents[0:len(contents) - 1])
     file.close()
 
 def FocusNextElement(event):
@@ -105,6 +117,9 @@ def FocusNextElement(event):
     return("break")
 
 def DisplayGraph():
+    DG(GetMonthData())
+
+def GetMonthData():
     month_data = [
         [],
         [],
@@ -115,6 +130,11 @@ def DisplayGraph():
 
     for i in range(5):
         for j in range(7):
-            month_data.append(all_weeks[i][j].get("1.0", "end-1c"))
+            to_append = all_weeks[i][j].get("1.0", "end-1c").strip()
 
-    DG(month_data)
+            if len(to_append) != 0:
+                month_data[i].append(to_append)
+            else:
+                month_data[i].append(0)
+
+    return month_data
